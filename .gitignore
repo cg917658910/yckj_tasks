@@ -1,0 +1,9 @@
+功能.md
+任务管理系统相关文档/
+vendor
+runtime
+node_modules
+.env
+dist
+*/public/storage
+*/public/uploads/
