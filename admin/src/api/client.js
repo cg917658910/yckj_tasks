@@ -1,8 +1,21 @@
 import axios from 'axios'
 import { notify } from '../store/notify'
 
+// 根据环境变量获取 API 基础地址
+const getBaseURL = () => {
+  // 优先使用环境变量配置
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL
+  }
+  
+  // 根据开发/生产环境返回默认值
+  return import.meta.env.MODE === 'production' 
+    ? 'https://api.yourdomain.com'  // 生产环境默认地址
+    : 'http://127.0.0.1:8000'        // 开发环境默认地址
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000',
+  baseURL: getBaseURL(),
   timeout: 10000,
 })
 
@@ -21,7 +34,8 @@ api.interceptors.response.use(
     if (status === 401) {
       localStorage.removeItem('admin_token')
       if (window.location.pathname !== '/login') {
-        window.location.href = '/login'
+       // to login page router
+       router.push('/login')
       }
     }
     const message = error?.response?.data?.message || error.message || '请求失败'

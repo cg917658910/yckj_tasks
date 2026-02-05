@@ -1,0 +1,12 @@
+env: dev
+addr: ":8000"
+
+db_dsn: "root:cg123456@tcp(127.0.0.1:3306)/task_system?charset=utf8mb4&parseTime=True&loc=Local"
+
+jwt_secret: "change-me"
+jwt_issuer: "task-system"
+jwt_ttl: 7200  # 单位: 秒
+
+upload_dir: "./static/uploads"
+base_url: "http://127.0.0.1:8000"
+allow_origin: "*"  # 生产环境建议改成具体域名,例如 https://tongcheng.51ing.cn

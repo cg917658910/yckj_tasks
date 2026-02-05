@@ -32,10 +32,11 @@ func SaveImage(cfg config.Config, file *multipart.FileHeader) (map[string]string
 	if err := saveUploadedFile(file, path); err != nil {
 		return nil, errors.New("上传失败")
 	}
+	// cfg.UploadDir 处理相对目录
 
-	rel := "/uploads/" + name
+	rel := filepath.ToSlash(filepath.Join(cfg.UploadDir, name))
 	return map[string]string{
-		"url":  strings.TrimRight(cfg.BaseURL, "/") + rel,
+		"url":  cfg.BaseURL + "/" + rel,
 		"path": rel,
 	}, nil
 }

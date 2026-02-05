@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Dashboard from '../pages/Dashboard.vue'
-import Tasks from '../pages/Tasks.vue'
 import Claims from '../pages/Claims.vue'
+import Dashboard from '../pages/Dashboard.vue'
+import Login from '../pages/Login.vue'
 import Points from '../pages/Points.vue'
 import PointsHistory from '../pages/PointsHistory.vue'
-import Withdrawals from '../pages/Withdrawals.vue'
-import Users from '../pages/Users.vue'
 import Settings from '../pages/Settings.vue'
-import Login from '../pages/Login.vue'
+import Tasks from '../pages/Tasks.vue'
+import Users from '../pages/Users.vue'
+import Withdrawals from '../pages/Withdrawals.vue'
 
 const routes = [
   { path: '/', redirect: '/dashboard' },
@@ -24,7 +24,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 

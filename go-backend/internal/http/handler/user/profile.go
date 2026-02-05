@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"task-system-go/internal/db"
 	"task-system-go/internal/model"
 	"task-system-go/internal/util"
@@ -17,13 +18,16 @@ func (h ProfileHandler) Info(c *gin.Context) {
 	if v, ok := userID.(float64); ok {
 		uid = uint64(v)
 	}
-
-	var data map[string]interface{}
-	_ = db.DB.Table("users u").
+	fmt.Printf("Fetching profile for user ID: %d\n", uid)
+	data := make(map[string]interface{})
+	if err := db.DB.Table("users u").
 		Select("u.id,u.username,u.created_at,p.available_points,p.frozen_points,p.withdrawn_points,up.wechat_qr_url,up.total_withdrawn").
 		Joins("left join points_accounts p on u.id = p.user_id").
 		Joins("left join user_profiles up on u.id = up.user_id").
-		Where("u.id = ?", uid).First(&data).Error
+		Where("u.id = ?", uid).Scan(&data).Error; err != nil {
+		util.JSONError(c, "用户不存在", 1)
+		return
+	}
 
 	util.JSONSuccess(c, data)
 }

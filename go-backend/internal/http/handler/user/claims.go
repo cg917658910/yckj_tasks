@@ -18,12 +18,12 @@ func (h ClaimHandler) Current(c *gin.Context) {
 		uid = uint64(v)
 	}
 
-	var item map[string]interface{}
+	item := make(map[string]interface{})
 	_ = db.DB.Table("task_claims c").
 		Select("c.*, t.title as task_title, t.summary, t.detail, t.doc_url, t.reward_points").
 		Joins("left join tasks t on c.task_id = t.id").
 		Where("c.user_id = ? AND c.status IN (1,2,4)", uid).
-		Order("c.id desc").First(&item).Error
+		Order("c.id desc").Scan(&item).Error
 
 	util.JSONSuccess(c, gin.H{"current": item})
 }

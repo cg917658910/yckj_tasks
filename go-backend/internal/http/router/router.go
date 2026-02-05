@@ -21,6 +21,9 @@ func New(cfg config.Config) *gin.Engine {
 	userAuth := user.AuthHandler{JWT: jwtMgr}
 	upload := common.UploadHandler{Cfg: cfg}
 
+	// static files
+	r.Static("/static", "./static")
+
 	r.POST("/admin/auth/login", adminAuth.Login)
 	r.POST("/admin/auth/logout", middleware.AdminAuth(jwtMgr), adminAuth.Logout)
 	// admin routes

@@ -18,8 +18,9 @@ func (h ClaimHandler) List(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
 
 	query := db.DB.Table("task_claims c").
-		Select("c.*, t.title as task_title, t.reward_points, u.username").
+		Select("c.*, t.title as task_title, t.reward_points, u.username,up.wechat_qr_url").
 		Joins("left join tasks t on c.task_id = t.id").
+		Joins("left join user_profiles up on c.user_id = up.user_id").
 		Joins("left join users u on c.user_id = u.id").Order("c.id desc")
 
 	if statusStr != "" {

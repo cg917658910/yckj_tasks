@@ -59,9 +59,9 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { changePassword, fetchClaimHistory, uploadImage, updateWechatQr } from '../api/user'
-import { profileState, loadProfile } from '../store/profile'
+import { changePassword, fetchClaimHistory, updateWechatQr, uploadImage } from '../api/user'
 import { notify } from '../store/notify'
+import { loadProfile, profileState } from '../store/profile'
 
 const profile = profileState
 const oldPassword = ref('')
@@ -90,10 +90,14 @@ const withdrawable = computed(() => {
 
 const save = async () => {
   try {
-    await changePassword({ old_password: oldPassword.value, new_password: newPassword.value })
+    const res = await changePassword({ old_password: oldPassword.value, new_password: newPassword.value })
     oldPassword.value = ''
     newPassword.value = ''
-    await loadProfile()
+    //await loadProfile()
+    console.log(res)
+    if (res.code !== 0) {
+      throw new Error(res.message || '修改失败')
+    }
     notify('密码已更新', 'success')
   } catch (err) {
     notify(err.message || '修改失败', 'error')
