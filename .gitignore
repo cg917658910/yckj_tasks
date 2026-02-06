@@ -7,3 +7,5 @@ node_modules
 dist
 */public/storage
 */public/uploads/
+bin
+go-backend/static
