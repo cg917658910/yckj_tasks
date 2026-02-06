@@ -1,9 +1,12 @@
 <template>
   <section class="panel">
     <div class="panel-head">
-      <div>
+      <div class="detail-head">
+        <button class="ghost-btn" @click="goBack">返回任务列表</button>
+        <div>
         <div class="panel-title">{{ detail.title }}</div>
         <div class="panel-sub">奖励 {{ detail.reward_points }} 积分</div>
+        </div>
       </div>
       <button class="primary-btn" @click="handleClaim" :disabled="detail.claimed">
         {{ detail.claimed ? '已领取' : '领取任务' }}
@@ -17,7 +20,7 @@
       <ul class="rule-list">
         <li>提交任务成果截图（可多图）</li>
         <li>填写备注说明，描述完成过程</li>
-        <li>审核通过后自动发放积分</li>
+        <li>审核通过后发放积分</li>
       </ul>
     </div>
 
@@ -67,7 +70,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { fetchTaskDetail, claimTask } from '../api/user'
+import { claimTask, fetchTaskDetail } from '../api/user'
 import NoticeBar from '../components/NoticeBar.vue'
 
 const route = useRoute()
@@ -98,6 +101,10 @@ const handleClaim = async () => {
   } catch (err) {
     console.error(err)
   }
+}
+
+const goBack = () => {
+  router.push('/tasks')
 }
 
 onMounted(load)

@@ -7,18 +7,62 @@
       </div>
     </div>
 
-    <div v-if="current" class="task-current">
-      <div>
-        <div class="task-title">{{ current.task_title }}</div>
-        <div class="task-desc">{{ current.summary }}</div>
-        <div v-if="current.doc_url" class="task-desc">
-          附件：
-          <a :href="current.doc_url" target="_blank">查看附件</a>
+    <div v-if="current && current?.status" class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">{{ current.task_title }}</div>
+          <div class="panel-sub">奖励 {{ current.reward_points }} 积分</div>
         </div>
+        <button
+          v-if="current.status === 1 || current.status === 4"
+          class="primary-btn"
+          @click="showSubmit = true"
+        >
+          提交成果
+        </button>
+        <button v-else class="primary-btn disabled" disabled>提交成果</button>
       </div>
-      <button class="primary-btn" @click="showSubmit = true">提交成果</button>
+      <div class="detail-block">
+        <div class="detail-title">任务简介</div>
+        <div class="detail-text">{{ current.summary }}</div>
+      </div>
+
+      <div class="detail-block">
+        <div class="detail-title">任务详情</div>
+        <div class="detail-text">{{ current.detail }}</div>
+      </div>
+
+      <div v-if="current.doc_url" class="detail-block">
+        <div class="detail-title">文档资料</div>
+        <a :href="current.doc_url" target="_blank">查看附件</a>
+      </div>
+
+      <div class="detail-block">
+        <div class="detail-title">状态流转</div>
+        <ol class="flow-list">
+          <li>领取任务</li>
+          <li>提交成果</li>
+          <li>等待审核</li>
+          <li>审核通过获得积分</li>
+        </ol>
+      </div>
+
+      <div class="detail-block">
+        <div class="detail-title">当前状态</div>
+        <span class="badge" :class="statusBadgeClass(current.status)">{{ statusText(current.status) }}</span>
+      </div>
+
+      <div v-if="current.status === 2" class="detail-block">
+        <div class="detail-title">审核结果</div>
+        <div class="detail-text">审核中，请耐心等待</div>
+      </div>
     </div>
-    <EmptyState v-else title="暂无进行中的任务" desc="去任务列表领取一个任务开始吧" />
+    <div v-else class="panel empty-current">
+      <EmptyState title="暂无进行中的任务" desc="去任务列表领取一个任务开始吧" />
+      <div class="modal-actions">
+        <button class="primary-btn" @click="goTasks">去领取任务</button>
+      </div>
+    </div>
 
     <div class="history">
       <div class="panel-sub">历史记录</div>
@@ -34,7 +78,7 @@
             <a :href="item.doc_url" target="_blank">查看附件</a>
           </div>
         </div>
-        <div class="points">{{ item.reward_points }} 积分</div>
+        <div class="points">+{{ item.reward_points_final }} 积分</div>
       </div>
       <EmptyState v-if="history.length === 0" title="暂无历史任务" desc="完成任务后会在这里显示记录" />
     </div>
@@ -65,7 +109,8 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { fetchCurrentClaim, fetchClaimHistory, submitClaim, uploadImage } from '../api/user'
+import { useRouter } from 'vue-router'
+import { fetchClaimHistory, fetchCurrentClaim, submitClaim, uploadImage } from '../api/user'
 import EmptyState from '../components/EmptyState.vue'
 import { notify } from '../store/notify'
 
@@ -75,6 +120,7 @@ const showSubmit = ref(false)
 const images = ref([])
 const remark = ref('')
 const uploading = ref(false)
+const router = useRouter()
 
 const load = async () => {
   try {
@@ -136,6 +182,18 @@ const statusText = (status) => {
   if (status === 3) return '已完成'
   if (status === 4) return '驳回'
   return '-'
+}
+
+const statusBadgeClass = (status) => {
+  if (status === 1) return 'available'
+  if (status === 2) return 'pending'
+  if (status === 3) return 'claimed'
+  if (status === 4) return 'claimed'
+  return 'available'
+}
+
+const goTasks = () => {
+  router.push('/tasks')
 }
 
 onMounted(load)

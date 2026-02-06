@@ -33,6 +33,7 @@ func New(cfg config.Config) *gin.Engine {
 		adminGroup.POST("/tasks", admin.TaskHandler{}.Create)
 		adminGroup.PUT("/tasks/:id", admin.TaskHandler{}.Update)
 		adminGroup.PUT("/tasks/:id/off", admin.TaskHandler{}.Off)
+		adminGroup.PUT("/tasks/:id/on", admin.TaskHandler{}.On)
 
 		adminGroup.GET("/claims", admin.ClaimHandler{}.List)
 		adminGroup.POST("/claims/:id/approve", admin.ClaimHandler{}.Approve)

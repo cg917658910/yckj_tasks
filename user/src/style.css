@@ -23,7 +23,8 @@ body {
 .app {
   display: grid;
   grid-template-columns: 240px 1fr;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .app--authless {
@@ -36,6 +37,8 @@ body {
   padding: 20px 16px;
   display: grid;
   gap: 20px;
+  height: 100%;
+  overflow: hidden;
 }
 
 .brand {
@@ -210,6 +213,7 @@ body {
 
 .main {
   padding: 24px 28px;
+  overflow: auto;
 }
 
 .app--authless .main {
@@ -303,6 +307,11 @@ body {
   color: #16a34a;
 }
 
+.badge.pending {
+  background: rgba(245, 158, 11, 0.18);
+  color: #f59e0b;
+}
+
 .rule-list {
   margin: 0;
   padding-left: 18px;
@@ -336,6 +345,20 @@ body {
   border-radius: 12px;
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(47, 110, 243, 0.24);
+}
+
+.primary-btn.disabled,
+.primary-btn:disabled {
+  background: #d1d5db;
+  color: #6b7280;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.detail-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .ghost-btn {

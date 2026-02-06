@@ -37,13 +37,22 @@
         </div>
         <div class="time">{{ item.submitted_at || '-' }}</div>
         <div>
-          <button class="link" @click="openImages(item)" :disabled="!item.images || item.images.length === 0">
+          <button
+            v-if="item.status === 2"
+            class="link"
+            @click="openImages(item)"
+            :disabled="!item.images || item.images.length === 0"
+          >
             查看截图
           </button>
+          <span v-else class="muted">-</span>
         </div>
         <div>
-          <button class="link success" @click="openApprove(item)" :disabled="item.status !== 2">通过</button>
-          <button class="link danger" @click="reject(item)" :disabled="item.status !== 2">驳回</button>
+          <template v-if="item.status === 2">
+            <button class="link success" @click="openApprove(item)">通过</button>
+            <button class="link danger" @click="reject(item)">驳回</button>
+          </template>
+          <span v-else class="muted">-</span>
         </div>
       </div>
     </div>

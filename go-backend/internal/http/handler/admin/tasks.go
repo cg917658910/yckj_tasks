@@ -18,18 +18,21 @@ func (h TaskHandler) List(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
 
-	query := db.DB.Model(&model.Task{}).Order("id desc")
+	query := db.DB.Table("tasks t").
+		Select("t.*, c.id as claimed").
+		Joins("left join task_claims c on t.id = c.task_id").
+		Order("t.id desc")
 	if statusStr != "" {
 		status, _ := strconv.Atoi(statusStr)
-		query = query.Where("status = ?", status)
+		query = query.Where("t.status = ?", status)
 	}
 	if keyword != "" {
-		query = query.Where("title LIKE ?", "%"+keyword+"%")
+		query = query.Where("t.title LIKE ?", "%"+keyword+"%")
 	}
 
 	var total int64
 	_ = query.Count(&total).Error
-	var list []model.Task
+	var list []map[string]interface{}
 	_ = query.Offset((page-1)*pageSize).Limit(pageSize).Find(&list).Error
 
 	util.JSONSuccess(c, gin.H{"list": list, "total": total, "page": page, "page_size": pageSize})
@@ -80,6 +83,15 @@ func (h TaskHandler) Off(c *gin.Context) {
 	id := c.Param("id")
 	if err := db.DB.Model(&model.Task{}).Where("id = ?", id).Update("status", service.TaskStatusOffline).Error; err != nil {
 		util.JSONError(c, "下架失败", 1)
+		return
+	}
+	util.JSONSuccess(c, gin.H{})
+}
+
+func (h TaskHandler) On(c *gin.Context) {
+	id := c.Param("id")
+	if err := db.DB.Model(&model.Task{}).Where("id = ?", id).Update("status", service.TaskStatusOnline).Error; err != nil {
+		util.JSONError(c, "上架失败", 1)
 		return
 	}
 	util.JSONSuccess(c, gin.H{})

@@ -56,7 +56,7 @@
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { userLogout } from '../api/user'
-import { profileState, loadProfile } from '../store/profile'
+import { loadProfile, profileState } from '../store/profile'
 
 const router = useRouter()
 const profile = profileState
@@ -86,7 +86,7 @@ const logout = async () => {
 }
 
 const goWithdraw = () => {
-  router.push('/withdraw')
+  router.push('/profile')
 }
 
 const goPoints = () => {

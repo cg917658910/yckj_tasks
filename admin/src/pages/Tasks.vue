@@ -22,6 +22,7 @@
       <div class="table-head">
         <div>任务名称</div>
         <div>奖励积分</div>
+        <div>领取状态</div>
         <div>状态</div>
         <div>创建时间</div>
         <div>操作</div>
@@ -32,11 +33,17 @@
           <div class="task-desc">{{ item.summary }}</div>
         </div>
         <div class="points">{{ item.reward_points }} 积分</div>
+        <div>
+          <span class="chip" :class="item.claimed ? 'claimed' : 'online'">
+            {{ item.claimed ? '已领取' : '未领取' }}
+          </span>
+        </div>
         <div><span class="chip" :class="statusClass(item.status)">{{ statusText(item.status) }}</span></div>
         <div class="time">{{ item.created_at }}</div>
         <div>
           <button class="link" @click="edit(item)">编辑</button>
-          <button class="link danger" @click="off(item)">下架</button>
+          <button v-if="item.status !== 1" class="link success" @click="on(item)">上架</button>
+          <button v-else class="link danger" @click="off(item)">下架</button>
         </div>
       </div>
     </div>
@@ -84,8 +91,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { fetchTasks, createTask, updateTask, offTask, uploadImage } from '../api/admin'
+import { onMounted, ref, watch } from 'vue'
+import { createTask, fetchTasks, offTask, onTask, updateTask, uploadImage } from '../api/admin'
 import Pagination from '../components/Pagination.vue'
 import { notify } from '../store/notify'
 
@@ -174,6 +181,16 @@ const off = async (item) => {
   }
 }
 
+const on = async (item) => {
+  try {
+    await onTask(item.id)
+    await load()
+    notify('任务已上架', 'success')
+  } catch (err) {
+    notify(err.message || '上架失败', 'error')
+  }
+}
+
 const handleUpload = async (event) => {
   const file = event.target.files?.[0]
   if (!file) return
@@ -203,5 +220,11 @@ const statusClass = (status) => {
   return 'pending'
 }
 
-onMounted(load)
+onMounted(() => {
+  load()
+  // ?create=true means open create form
+  if (window.location.search.includes('create=true')) {
+    openCreate()
+  }
+})
 </script>

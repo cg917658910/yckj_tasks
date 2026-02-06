@@ -39,6 +39,11 @@ api.interceptors.response.use((response) => {
     }
     return Promise.reject(new Error('未授权，请重新登录'))
   }
+   if (code !== 0) {
+        const message = response.data?.message || '请求失败'
+        notify(message, 'error')
+        return Promise.reject(new Error(message))
+    }
   return response.data
 }, (response) => response.data,
   (error) => {

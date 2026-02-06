@@ -381,6 +381,11 @@ body {
   color: var(--muted);
 }
 
+.muted {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .table {
   display: grid;
   gap: 10px;

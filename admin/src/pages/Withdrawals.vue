@@ -35,8 +35,11 @@
         </div>
         <div><span class="chip" :class="statusClass(item.status)">{{ statusText(item.status) }}</span></div>
         <div>
-          <button class="link success" @click="pay(item)">打款</button>
-          <button class="link danger" @click="openReject(item)">驳回</button>
+          <template v-if="item.status === 1">
+            <button class="link success" @click="pay(item)">打款</button>
+            <button class="link danger" @click="openReject(item)">驳回</button>
+          </template>
+          <span v-else class="muted">-</span>
         </div>
       </div>
     </div>

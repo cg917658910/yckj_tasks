@@ -26,7 +26,12 @@
         </div>
         <div class="task-foot">
           <div class="points">⭐ {{ task.reward_points }} 积分</div>
-          <button class="primary-btn" @click.stop="handleClaim(task)" :disabled="task.claimed">
+          <button
+            class="primary-btn"
+            :class="{ disabled: task.claimed }"
+            @click.stop="handleClaim(task)"
+            :disabled="task.claimed"
+          >
             {{ task.claimed ? '已领取' : '领取任务' }}
           </button>
         </div>

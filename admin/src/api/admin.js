@@ -9,6 +9,7 @@ export const fetchTasks = (params) => api.get('/admin/tasks', { params })
 export const createTask = (data) => api.post('/admin/tasks', data)
 export const updateTask = (id, data) => api.put(`/admin/tasks/${id}`, data)
 export const offTask = (id) => api.put(`/admin/tasks/${id}/off`)
+export const onTask = (id) => api.put(`/admin/tasks/${id}/on`)
 export const uploadImage = (formData) =>
   api.post('/admin/upload/image', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
