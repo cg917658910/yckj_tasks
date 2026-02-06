@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '../router'
 import { notify } from '../store/notify'
 
 // 根据环境变量获取 API 基础地址
@@ -28,7 +29,20 @@ api.interceptors.request.use((config) => {
 })
 
 api.interceptors.response.use(
-  (response) => response.data,
+  (response) => {
+    // code == 401 跳登录
+    const code = response.data?.code
+    if (code === 401) {
+      localStorage.removeItem('admin_token')
+      if (window.location.pathname !== '/login') {
+       // to login page router
+       router.push('/login')
+      }
+      return Promise.reject(new Error('未授权，请重新登录'))
+    }
+    return response.data
+  },
+
   (error) => {
     const status = error?.response?.status
     if (status === 401) {

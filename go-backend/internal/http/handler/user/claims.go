@@ -36,7 +36,7 @@ func (h ClaimHandler) History(c *gin.Context) {
 	}
 	list := []map[string]interface{}{}
 	_ = db.DB.Table("task_claims c").
-		Select("c.*, t.title as task_title, t.reward_points").
+		Select("c.*, t.title as task_title, t.reward_points, t.doc_url").
 		Joins("left join tasks t on c.task_id = t.id").
 		Where("c.user_id = ?", uid).Order("c.id desc").Find(&list).Error
 	util.JSONSuccess(c, gin.H{"list": list})

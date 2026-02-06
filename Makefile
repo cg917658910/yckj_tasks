@@ -85,7 +85,7 @@ deploy-files:
 	ssh $(DEPLOY_SSH_ALIAS) "mkdir -p $(DEPLOY_PATH)/{admin,user,go-backend}"
 	rsync -avz --delete admin/dist/ $(DEPLOY_SSH_ALIAS):$(DEPLOY_PATH)/admin/
 	rsync -avz --delete user/dist/ $(DEPLOY_SSH_ALIAS):$(DEPLOY_PATH)/user/
-	rsync -avz go-backend/bin/$(GO_BINARY_NAME) $(DEPLOY_SSH_ALIAS):$(DEPLOY_PATH)/go-backend/
+	rsync -avz go-backend/bin/$(GO_BINARY_NAME) $(DEPLOY_SSH_ALIAS):/home/cg/yckj-tasks/
 
 deploy-admin: build-admin
 	@echo "==> 部署 admin 到服务器..."

@@ -19,7 +19,7 @@ func SaveImage(cfg config.Config, file *multipart.FileHeader) (map[string]string
 	if file.Size > 5*1024*1024 {
 		return nil, errors.New("文件过大")
 	}
-	allowed := map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".gif": true}
+	allowed := map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".gif": true, ".pdf": true, ".doc": true, ".docx": true}
 	ext := strings.ToLower(filepath.Ext(file.Filename))
 	if !allowed[ext] {
 		return nil, errors.New("不支持的文件类型")

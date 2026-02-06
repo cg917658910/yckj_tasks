@@ -17,11 +17,12 @@
       </select>
     </div>
 
-    <div class="table">
+    <div class="table table--withdrawals">
       <div class="table-head">
         <div>用户</div>
         <div>申请金额</div>
         <div>消耗积分</div>
+        <div>收款二维码</div>
         <div>状态</div>
         <div>操作</div>
       </div>
@@ -29,6 +30,9 @@
         <div>{{ item.username }}</div>
         <div>{{ item.amount }} 元</div>
         <div>{{ item.points_cost }}</div>
+        <div>
+          <button class="link" @click="openQr(item)" :disabled="!item.qr_url">查看</button>
+        </div>
         <div><span class="chip" :class="statusClass(item.status)">{{ statusText(item.status) }}</span></div>
         <div>
           <button class="link success" @click="pay(item)">打款</button>
@@ -46,6 +50,18 @@
         <div class="modal-actions">
           <button class="ghost-btn" @click="closeReject">取消</button>
           <button class="primary-btn" @click="confirmReject">提交</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQr" class="modal">
+      <div class="modal-card">
+        <div class="modal-title">收款二维码</div>
+        <div class="upload-preview">
+          <img :src="qrUrl" alt="收款二维码" />
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-btn" @click="closeQr">关闭</button>
         </div>
       </div>
     </div>
@@ -68,6 +84,8 @@ const pageSize = ref(10)
 const showReject = ref(false)
 const current = ref(null)
 const rejectReason = ref('')
+const showQr = ref(false)
+const qrUrl = ref('')
 
 const load = async () => {
   try {
@@ -125,6 +143,16 @@ const confirmReject = async () => {
 
 const closeReject = () => {
   showReject.value = false
+}
+
+const openQr = (item) => {
+  qrUrl.value = item.qr_url || ''
+  showQr.value = true
+}
+
+const closeQr = () => {
+  showQr.value = false
+  qrUrl.value = ''
 }
 
 const statusText = (status) => {

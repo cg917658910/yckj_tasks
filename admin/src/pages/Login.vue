@@ -55,6 +55,10 @@ const submit = async () => {
   try {
     loading.value = true
     const res = await adminLogin(form)
+    // code != 0 代表登录失败
+    if (res.code !== 0) {
+      throw new Error(res.message || '登录失败')
+    }
     const token = res.data?.token
     if (!token) {
       throw new Error('未获取到登录凭证')

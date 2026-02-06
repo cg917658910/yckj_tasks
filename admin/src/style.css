@@ -389,9 +389,14 @@ body {
 .table-head,
 .table-row {
   display: grid;
-  grid-template-columns: 2fr 0.8fr 0.8fr 1fr 0.8fr;
+  grid-template-columns: 2fr 0.8fr 0.8fr 1fr 0.8fr 0.8fr;
   gap: 12px;
   align-items: center;
+}
+
+.table--withdrawals .table-head,
+.table--withdrawals .table-row {
+  grid-template-columns: 1fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr;
 }
 
 .table-head {
@@ -508,6 +513,19 @@ body {
 .approve-actions {
   display: flex;
   gap: 6px;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.image-grid img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  object-fit: cover;
 }
 
 .modal {

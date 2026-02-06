@@ -29,7 +29,7 @@ class ClaimController extends BaseController
         $userId = (int) ($this->request->user['user_id'] ?? 0);
         $list = Db::name('task_claims')->alias('c')
             ->leftJoin('tasks t', 'c.task_id = t.id')
-            ->field('c.*, t.title as task_title, t.reward_points')
+            ->field('c.*, t.title as task_title, t.reward_points, t.doc_url')
             ->where('c.user_id', $userId)
             ->order('c.id', 'desc')
             ->select()

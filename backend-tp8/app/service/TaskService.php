@@ -47,6 +47,11 @@ class TaskService
                 'user_id' => $userId,
                 'status' => self::CLAIM_STATUS_CLAIMED,
                 'claimed_at' => date('Y-m-d H:i:s'),
+                'submitted_at' => null,
+                'reviewed_at' => null,
+                'review_result' => null,
+                'reject_reason' => null,
+                'reward_points_final' => null,
             ]);
         });
     }

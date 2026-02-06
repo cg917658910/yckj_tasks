@@ -40,10 +40,10 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { fetchTasks, claimTask } from '../api/user'
-import { notify } from '../store/notify'
-import NoticeBar from '../components/NoticeBar.vue'
+import { claimTask, fetchTasks } from '../api/user'
 import EmptyState from '../components/EmptyState.vue'
+import NoticeBar from '../components/NoticeBar.vue'
+import { notify } from '../store/notify'
 
 const router = useRouter()
 const keyword = ref('')
@@ -61,7 +61,10 @@ const load = async () => {
 
 const handleClaim = async (task) => {
   try {
-    await claimTask(task.id)
+   const res =  await claimTask(task.id)
+   if (res.code !== 0) {
+     throw new Error(res.message || '领取失败')
+   }
     await load()
     notify('任务领取成功', 'success')
   } catch (err) {

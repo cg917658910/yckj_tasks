@@ -43,10 +43,15 @@ func ClaimTask(userID, taskID uint64) error {
 		}
 
 		claim := model.TaskClaim{
-			TaskID:    taskID,
-			UserID:    userID,
-			Status:    ClaimStatusClaimed,
-			ClaimedAt: time.Now(),
+			TaskID:            taskID,
+			UserID:            userID,
+			Status:            ClaimStatusClaimed,
+			ClaimedAt:         time.Now(),
+			SubmittedAt:       nil,
+			ReviewedAt:        nil,
+			ReviewResult:      nil,
+			RejectReason:      "",
+			RewardPointsFinal: nil,
 		}
 		return tx.Create(&claim).Error
 	})

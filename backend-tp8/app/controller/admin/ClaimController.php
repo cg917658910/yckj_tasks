@@ -30,8 +30,31 @@ class ClaimController extends BaseController
         }
 
         $pager = $query->order('c.id', 'desc')->paginate(['list_rows' => $pageSize, 'page' => $page])->toArray();
+        $list = $pager['data'] ?? [];
+        if (!empty($list)) {
+            $claimIds = array_column($list, 'id');
+            $submissions = Db::name('task_submissions')->whereIn('claim_id', $claimIds)->select()->toArray();
+            $submissionMap = [];
+            foreach ($submissions as $sub) {
+                $submissionMap[$sub['claim_id']] = $sub['id'];
+            }
+            $submissionIds = array_values($submissionMap);
+            $images = [];
+            if (!empty($submissionIds)) {
+                $rows = Db::name('task_submission_images')->whereIn('submission_id', $submissionIds)->select()->toArray();
+                foreach ($rows as $row) {
+                    $images[$row['submission_id']][] = $row['image_url'];
+                }
+            }
+            foreach ($list as &$item) {
+                $submissionId = $submissionMap[$item['id']] ?? null;
+                $item['images'] = $submissionId ? ($images[$submissionId] ?? []) : [];
+            }
+            unset($item);
+        }
+
         return json_success([
-            'list' => $pager['data'] ?? [],
+            'list' => $list,
             'total' => (int) ($pager['total'] ?? 0),
             'page' => (int) ($pager['current_page'] ?? $page),
             'page_size' => (int) ($pager['per_page'] ?? $pageSize),

@@ -23,6 +23,7 @@
         <div>提交用户</div>
         <div>状态</div>
         <div>提交时间</div>
+        <div>截图</div>
         <div>操作</div>
       </div>
       <div class="table-row" v-for="item in list" :key="item.id">
@@ -35,6 +36,11 @@
           <span class="chip" :class="statusClass(item.status)">{{ statusText(item.status) }}</span>
         </div>
         <div class="time">{{ item.submitted_at || '-' }}</div>
+        <div>
+          <button class="link" @click="openImages(item)" :disabled="!item.images || item.images.length === 0">
+            查看截图
+          </button>
+        </div>
         <div>
           <button class="link success" @click="openApprove(item)" :disabled="item.status !== 2">通过</button>
           <button class="link danger" @click="reject(item)" :disabled="item.status !== 2">驳回</button>
@@ -74,6 +80,18 @@
         </div>
       </div>
     </div>
+
+    <div v-if="showImages" class="modal">
+      <div class="modal-card">
+        <div class="modal-title">提交截图</div>
+        <div class="image-grid">
+          <img v-for="(img, idx) in imageList" :key="idx" :src="img" alt="截图" />
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-btn" @click="closeImages">关闭</button>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -96,6 +114,8 @@ const current = ref(null)
 const rejectReason = ref('')
 const approvePoints = ref(0)
 const approveRemark = ref('')
+const showImages = ref(false)
+const imageList = ref([])
 
 const load = async () => {
   try {
@@ -169,14 +189,26 @@ const closeApprove = () => {
   showApprove.value = false
 }
 
+const openImages = (item) => {
+  imageList.value = item.images || []
+  showImages.value = true
+}
+
+const closeImages = () => {
+  showImages.value = false
+  imageList.value = []
+}
+
 const statusText = (status) => {
+  if (status === 1) return '待提交'
   if (status === 2) return '待审核'
   if (status === 3) return '通过'
   if (status === 4) return '驳回'
-  return '进行中'
+  return '未知'
 }
 
 const statusClass = (status) => {
+  if (status === 1) return 'claimed'
   if (status === 2) return 'pending'
   if (status === 3) return 'online'
   if (status === 4) return 'claimed'

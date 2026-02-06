@@ -58,6 +58,9 @@ const submit = async (type) => {
   try {
     loading.value = true
     const res = type === 'register' ? await userRegister(form) : await userLogin(form)
+    if (res.code !== 0) {
+      throw new Error(res.message || (type === 'register' ? '注册失败' : '登录失败'))
+    }
     const token = res.data?.token
     if (!token) {
       throw new Error('未获取到登录凭证')

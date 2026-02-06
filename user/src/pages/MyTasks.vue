@@ -11,6 +11,10 @@
       <div>
         <div class="task-title">{{ current.task_title }}</div>
         <div class="task-desc">{{ current.summary }}</div>
+        <div v-if="current.doc_url" class="task-desc">
+          附件：
+          <a :href="current.doc_url" target="_blank">查看附件</a>
+        </div>
       </div>
       <button class="primary-btn" @click="showSubmit = true">提交成果</button>
     </div>
@@ -24,6 +28,10 @@
           <div class="task-desc">状态：{{ statusText(item.status) }}</div>
           <div v-if="item.status === 4 && item.reject_reason" class="task-desc">
             驳回原因：{{ item.reject_reason }}
+          </div>
+          <div v-if="item.doc_url" class="task-desc">
+            附件：
+            <a :href="item.doc_url" target="_blank">查看附件</a>
           </div>
         </div>
         <div class="points">{{ item.reward_points }} 积分</div>
@@ -123,7 +131,7 @@ const submit = async () => {
 }
 
 const statusText = (status) => {
-  if (status === 1) return '进行中'
+  if (status === 1) return '待提交'
   if (status === 2) return '待审核'
   if (status === 3) return '已完成'
   if (status === 4) return '驳回'
